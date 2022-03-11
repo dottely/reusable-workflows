@@ -7,18 +7,24 @@ on:
         required: true
 
 jobs:
-  fix:
-    name: PHP-CS-Fixer
+  setup:
+    name: Setup environment
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Setup php
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.1
-          extensions: dom, curl, libxml, mbstring, redis, zip
+          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
           coverage: none
+
+  fix:
+    name: PHP-CS-Fixer
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Configure Composer
         run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
       - name: Install Dependencies
@@ -33,15 +39,10 @@ jobs:
   analyze:
     name: PHPStan
     runs-on: ubuntu-latest
+    needs: setup
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup php
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
-          extensions: dom, curl, libxml, mbstring, redis, zip
-          coverage: none
       - name: Configure Composer
         run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
       - name: Install Dependencies
@@ -52,15 +53,10 @@ jobs:
   test:
     name: PHPUnit
     runs-on: ubuntu-latest
+    needs: setup
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup php
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
-          extensions: dom, curl, libxml, mbstring, redis, zip
-          coverage: none
       - name: Configure Composer
         run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
       - name: Install Dependencies
