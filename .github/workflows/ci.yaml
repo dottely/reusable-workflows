@@ -31,10 +31,10 @@ jobs:
         uses: ramsey/composer-install@v2
       - name: Run linter
         run: vendor/bin/php-cs-fixer fix --config ruleset-phpcsfixer.php --show-progress=dots -vvv
-#      - name: Commit changes
-#        uses: stefanzweifel/git-auto-commit-action@v4
-#        with:
-#          commit_message: "style: apply php-cs-fixer changes"
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "style: apply php-cs-fixer changes"
 
   analyze:
     name: PHPStan
