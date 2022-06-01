@@ -54,8 +54,10 @@ jobs:
         with:
           php-version: 8.1
           extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
-          ini-values: pcov.directory=api
-          coverage: pcov
+          #          ini-values: pcov.directory=api #optional, see above for usage.
+#            ini-values: xdebug.mode=coverage
+          coverage: xdebug
+    #          SAIL_XDEBUG_MODE=develop,debug,coverage
 
       - name: Checkout
         uses: actions/checkout@v2
