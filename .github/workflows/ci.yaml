@@ -16,6 +16,19 @@ jobs:
         with:
           php-version: 8.1
           extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
+          tools: phpcpd, php-cs-fixer
+
+
+  duplication-check:
+    name: Check the duplicate code in app/src directory
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run Check on 'src' dir
+        run: phpcpd src/ --min-lines=5 --min-tokens=10
+
 
   fix:
     name: PHP-CS-Fixer
@@ -24,12 +37,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Configure Composer
-        run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
-      - name: Install Dependencies
-        uses: ramsey/composer-install@v2
       - name: Run linter
-        run: vendor/bin/php-cs-fixer fix --dry-run --config ruleset-phpcsfixer.php --show-progress=dots -vvv
+        run: php-cs-fixer fix --dry-run --config ruleset-phpcsfixer.php --show-progress=dots -vvv
 
   analyze:
     name: PHPStan
@@ -42,6 +51,7 @@ jobs:
         run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
       - name: Install Dependencies
         uses: ramsey/composer-install@v2
+        #        https://github.com/sebastianbergmann/phpcpd/blob/21158aed508ffa2480b90f2af93724e3355c703f/.github/workflows/ci.yml#L58
       - name: Run analyzer
         run: vendor/bin/phpstan analyse --memory-limit=1G -c ruleset-phpstan.neon --error-format=github -vvv
 
