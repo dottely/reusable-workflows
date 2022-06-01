@@ -5,6 +5,10 @@ on:
     secrets:
       COMPOSER_ACCESS_TOKEN:
         required: true
+env:
+  PHP_VERSION: 8.1
+  PHP_EXTENSIONS: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
+
 
 jobs:
   setup:
@@ -14,8 +18,8 @@ jobs:
       - name: Setup php
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
-          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
+          php-version: $PHP_VERSION
+          extensions: $PHP_EXTENSIONS
 
   fix:
     name: PHP-CS-Fixer
@@ -52,12 +56,9 @@ jobs:
       - name: Setup php
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
-          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
-          #          ini-values: pcov.directory=api #optional, see above for usage.
-#            ini-values: xdebug.mode=coverage
+          php-version: $PHP_VERSION
+          extensions: $PHP_EXTENSIONS
           coverage: xdebug
-    #          SAIL_XDEBUG_MODE=develop,debug,coverage
 
       - name: Checkout
         uses: actions/checkout@v2
