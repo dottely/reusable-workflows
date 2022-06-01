@@ -21,11 +21,15 @@ jobs:
 
   duplication-check:
     name: Check the duplicate code in app/src directory
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          tools: phpcpd
       - name: Run Check on 'src' dir
         run: phpcpd src/ --min-lines=5 --min-tokens=10
 
@@ -33,10 +37,14 @@ jobs:
   fix:
     name: PHP-CS-Fixer
     runs-on: ubuntu-latest
-    needs: setup
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          tools: php-cs-fixer
       - name: Run linter
         run: php-cs-fixer fix --dry-run --config ruleset-phpcsfixer.php --show-progress=dots -vvv
 
@@ -62,13 +70,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Cache the vulnerability database
-      - uses: actions/cache@v2
+        uses: actions/cache@v2
         id: cache-db
         with:
           path: ~/.symfony/cache
           key: db
       - name: Run security check
-      - uses: symfonycorp/security-checker-action@v3
+        uses: symfonycorp/security-checker-action@v3
         with:
           disable-exit-code: 1
 
