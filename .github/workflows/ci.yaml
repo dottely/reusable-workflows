@@ -7,31 +7,21 @@ on:
         required: true
 
 jobs:
-  setup:
-    name: Setup environment
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup php
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
-          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
-          tools: phpcpd, php-cs-fixer
-
-
   duplication-check:
     name: Check the duplicate code in app/src directory
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup php
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.1
           tools: phpcpd
+
       - name: Run Check on 'src' dir
-        run: phpcpd src/ --min-lines=5 --min-tokens=10
+        run: phpcpd src/ --min-lines=7 --min-tokens=10
 
 
   fix:
@@ -40,11 +30,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup php
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.1
           tools: php-cs-fixer
+
       - name: Run linter
         run: php-cs-fixer fix --dry-run --config ruleset-phpcsfixer.php --show-progress=dots -vvv
 
@@ -55,8 +47,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          extensions: dom, libxml, mbstring
+
       - name: Configure Composer
         run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
+
       - name: Install Dependencies
         uses: ramsey/composer-install@v2
         #        https://github.com/sebastianbergmann/phpcpd/blob/21158aed508ffa2480b90f2af93724e3355c703f/.github/workflows/ci.yml#L58
@@ -69,16 +69,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Cache the vulnerability database
         uses: actions/cache@v2
         id: cache-db
         with:
           path: ~/.symfony/cache
           key: db
+
       - name: Run security check
         uses: symfonycorp/security-checker-action@v3
         with:
           disable-exit-code: 1
+
 
   test:
     name: PHPUnit
@@ -93,10 +96,13 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Configure Composer
         run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
+
       - name: Install Dependencies
         uses: ramsey/composer-install@v2
+
       - name: Run tests
 #        run: vendor/bin/phpunit -vvv
         run: vendor/bin/testbench package:test --coverage --min=80
