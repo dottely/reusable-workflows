@@ -8,19 +8,19 @@ on:
 
 jobs:
   duplication-check:
-    name: Check the duplicate code in app/src directory
+    name: Code duplication check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup php
+      - name: 🔨 Setup php
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.1
           tools: phpcpd
 
-      - name: Run Check on 'src' dir
+      - name: 🔧 Check code duplication in "src" directory
         run: phpcpd src/ --min-lines=6 --min-tokens=10
 
 
@@ -31,13 +31,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup php
+      - name: 🔨 Setup php
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.1
           tools: php-cs-fixer
 
-      - name: Run linter
+      - name: 🔧  Run linter
         run: php-cs-fixer fix --dry-run --config ruleset-phpcsfixer.php --show-progress=dots -vvv
 
 
@@ -48,11 +48,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup php
+      - name: 🔨 Setup php
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.1
-#          extensions: dom, libxml, mbstring
 
       - name: Configure Composer
         run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
@@ -60,7 +59,7 @@ jobs:
       - name: Install Dependencies
         uses: ramsey/composer-install@v2
         #        https://github.com/sebastianbergmann/phpcpd/blob/21158aed508ffa2480b90f2af93724e3355c703f/.github/workflows/ci.yml#L58
-      - name: Run analyzer
+      - name: 🔧 Run analyzer
         run: vendor/bin/phpstan analyse --memory-limit=1G -c ruleset-phpstan.neon --error-format=github -vvv
 
   security-check:
@@ -77,7 +76,7 @@ jobs:
           path: ~/.symfony/cache
           key: db
 
-      - name: Run security check
+      - name: 💩 Run security check
         uses: symfonycorp/security-checker-action@v3
         with:
           disable-exit-code: 1
@@ -87,7 +86,7 @@ jobs:
     name: PHPUnit
     runs-on: ubuntu-latest
     steps:
-      - name: Setup php
+      - name: 🔨 Setup php
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.1
@@ -103,7 +102,7 @@ jobs:
       - name: Install Dependencies
         uses: ramsey/composer-install@v2
 
-      - name: Run tests
+      - name: 🔧 Run tests
 #        run: vendor/bin/phpunit -vvv
         run: vendor/bin/testbench package:test --coverage --min=85
 
