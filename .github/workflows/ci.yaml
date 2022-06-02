@@ -21,11 +21,11 @@ jobs:
           tools: phpcpd
 
       - name: Run Check on 'src' dir
-        run: phpcpd src/ --min-lines=7 --min-tokens=10
+        run: phpcpd src/ --min-lines=6 --min-tokens=10
 
 
-  fix:
-    name: PHP-CS-Fixer
+  cs-fixer:
+    name: PHP-CS-Fixer Linting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,6 +40,7 @@ jobs:
       - name: Run linter
         run: php-cs-fixer fix --dry-run --config ruleset-phpcsfixer.php --show-progress=dots -vvv
 
+
   analyze:
     name: PHPStan
     runs-on: ubuntu-latest
@@ -51,7 +52,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.1
-          extensions: dom, libxml, mbstring
+#          extensions: dom, libxml, mbstring
 
       - name: Configure Composer
         run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
@@ -104,6 +105,6 @@ jobs:
 
       - name: Run tests
 #        run: vendor/bin/phpunit -vvv
-        run: vendor/bin/testbench package:test --coverage --min=80
+        run: vendor/bin/testbench package:test --coverage --min=85
 
 
