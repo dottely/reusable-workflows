@@ -40,6 +40,22 @@ jobs:
       - name: 🔧  Run linter
         run: php-cs-fixer fix --dry-run --config ruleset-phpcsfixer.php --show-progress=dots -vvv
 
+  phpmd:
+    name: Php Mess Detector - Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛫 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🔨 Setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          tools: phpmd
+
+      - name: 🔧  Run Check
+        run: phpmd src text cleancode,codesize,controversial,design,unusedcode --ignore-violations-on-exit
+
 
   analyze:
     name: PHPStan
