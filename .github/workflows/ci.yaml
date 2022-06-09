@@ -37,6 +37,12 @@ jobs:
           php-version: 8.1
           tools: php-cs-fixer
 
+      - name: 🧙 Configure Composer
+        run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
+
+      - name: 🧙 Install Dependencies
+        uses: ramsey/composer-install@v2
+
       - name: 🔧  Run linter
         run: php-cs-fixer fix --dry-run --config ruleset-phpcsfixer.php --show-progress=dots -vvv
 
@@ -59,12 +65,6 @@ jobs:
       - name: 🧙 Install Dependencies
         uses: ramsey/composer-install@v2
         #        https://github.com/sebastianbergmann/phpcpd/blob/21158aed508ffa2480b90f2af93724e3355c703f/.github/workflows/ci.yml#L58
-
-      - name: Generate ide-helper files
-        run: |
-          if ${{env.DISABLE_IDE_HELPER}} == false; then
-            composer eli:ide-helper
-          fi
 
       - name: 🔧 Run analyzer
         run: vendor/bin/phpstan analyse --memory-limit=1G -c ruleset-phpstan.neon --error-format=github -vvv
