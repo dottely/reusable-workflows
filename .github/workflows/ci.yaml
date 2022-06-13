@@ -37,12 +37,6 @@ jobs:
           php-version: 8.1
           tools: php-cs-fixer
 
-      - name: 🧙 Configure Composer
-        run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
-
-      - name: 🧙 Install Dependencies
-        uses: ramsey/composer-install@v2
-
       - name: 🔧  Run linter
         run: php-cs-fixer fix --dry-run --config ruleset-phpcsfixer.php --show-progress=dots -vvv
 
