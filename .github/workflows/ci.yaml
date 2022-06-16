@@ -6,6 +6,9 @@ on:
       COMPOSER_ACCESS_TOKEN:
         required: true
 
+env:
+  PHP_VERSION: 8.1
+
 jobs:
   duplication-check:
     name: Code duplication check
@@ -17,7 +20,7 @@ jobs:
       - name: 🔨 Setup php
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: ${{ env.PHP_VERSION }}
           tools: phpcpd
 
       - name: 🔧 Check code duplication in "src" directory
@@ -33,7 +36,7 @@ jobs:
       - name: 🔨 Setup php
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: ${{ env.PHP_VERSION }}
           tools: php-cs-fixer
 
       - name: 🧙 Configure Composer
@@ -55,7 +58,7 @@ jobs:
       - name: 🔨 Setup php
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: ${{ env.PHP_VERSION }}
 
       - name: 🧙 Configure Composer
         run: composer config --auth github-oauth.github.com "${{ secrets.COMPOSER_ACCESS_TOKEN }}"
@@ -93,7 +96,7 @@ jobs:
       - name: 🔨 Setup php
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: ${{ env.PHP_VERSION }}
           extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
           coverage: xdebug
 
